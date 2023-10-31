@@ -1,109 +1,107 @@
-#include <iostream>
+#include<iostream>
 using namespace std;
-
-class Node {
-public:
+ 
+// Node class to represent link list
+class Node
+{
+    public:
     int row;
     int col;
-    int value;
-    Node* next;
-
-    Node(int r, int c, int val) {
-        row = r;
-        col = c;
-        value = val;
-        next = nullptr;
-    }
+    int data;
+    Node *next;
 };
-
-class SparseMatrix {
-private:
-    int rows, cols;
-    Node* head;
-
-public:
-    SparseMatrix(int m, int n) {
-        rows = m;
-        cols = n;
-        head = nullptr;
+ 
+// Function to create new node
+void create_new_node(Node **p, int row_index,
+                     int col_index, int x)
+{
+    Node *temp = *p;
+    Node *r;
+     
+    // If link list is empty then 
+    // create first node and assign value.
+    if (temp == NULL)
+    {
+        temp = new Node();
+        temp->row = row_index;
+        temp->col = col_index;
+        temp->data = x;
+        temp->next = NULL;
+        *p = temp;
     }
-
-    // Set a non-zero value at a specific position
-    void setValue(int row, int col, int value) {
-        if (row < 0 || row >= rows || col < 0 || col >= cols) {
-            cout << "Invalid row or column index" << endl;
-            return;
-        }
-        if (value == 0) {
-            // Don't store zero values in the linked list
-            return;
-        }
-        Node* newNode = new Node(row, col, value);
-        if (head == nullptr) {
-            head = newNode;
-        } else {
-            Node* current = head;
-            while (current->next != nullptr) {
-                current = current->next;
-            }
-            current->next = newNode;
+     
+    // If link list is already created
+    // then append newly created node
+    else
+    {
+        while (temp->next != NULL)   
+            temp = temp->next;
+             
+        r = new Node();
+        r->row = row_index;
+        r->col = col_index;
+        r->data = x;
+        r->next = NULL;
+        temp->next = r;
+    }
+}
+ 
+// Function prints contents of linked list
+// starting from start
+void printList(Node *start)
+{
+    Node *ptr = start;
+    cout << "row_position:";
+    while (ptr != NULL)
+    {
+        cout << ptr->row << " ";
+        ptr = ptr->next;
+    }
+    cout << endl;
+    cout << "column_position:";
+ 
+    ptr = start;
+    while (ptr != NULL)
+    {
+        cout << ptr->col << " ";
+        ptr = ptr->next;
+    }
+    cout << endl;
+    cout << "Value:";
+    ptr = start;
+     
+    while (ptr != NULL)
+    {
+        cout << ptr->data << " ";
+        ptr = ptr->next;
+    }
+}
+ 
+// Driver Code
+int main()
+{ 
+     
+    // 4x5 sparse matrix 
+    int sparseMatrix[4][5] = { { 0 , 0 , 3 , 0 , 4 },
+                               { 0 , 0 , 5 , 7 , 0 },
+                               { 0 , 0 , 0 , 0 , 0 },
+                               { 0 , 2 , 6 , 0 , 0 } };
+     
+    // Creating head/first node of list as NULL
+    Node *first = NULL;
+    for(int i = 0; i < 4; i++)
+    {
+        for(int j = 0; j < 5; j++)
+        {
+             
+            // Pass only those values which 
+            // are non - zero
+            if (sparseMatrix[i][j] != 0)
+                create_new_node(&first, i, j, 
+                                sparseMatrix[i][j]);
         }
     }
-
-    // Get the value at a specific position
-    int getValue(int row, int col) {
-        if (row < 0 || row >= rows || col < 0 || col >= cols) {
-            cout << "Invalid row or column index" << endl;
-            return 0;
-        }
-        Node* current = head;
-        while (current != nullptr) {
-            if (current->row == row && current->col == col) {
-                return current->value;
-            }
-            current = current->next;
-        }
-        return 0; // Return 0 for zero values or if the element is not found
-    }
-
-    // Display the sparse matrix
-    void display() {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                cout << getValue(i, j) << " ";
-            }
-            cout << endl;
-        }
-    }
-
-    ~SparseMatrix() {
-        Node* current = head;
-        while (current != nullptr) {
-            Node* next = current->next;
-            delete current;
-            current = next;
-        }
-    }
-};
-
-int main() {
-    int m, n;
-    cout << "Enter the number of rows: ";
-    cin >> m;
-    cout << "Enter the number of columns: ";
-    cin >> n;
-
-    SparseMatrix sparse(m, n);
-
-    cout << "Enter non-zero values (row, column, value):" << endl;
-    int row, col, value;
-    for (int i = 0; i < m; i++) {
-        cin >> row >> col >> value;
-        sparse.setValue(row, col, value);
-    }
-
-    cout << "Sparse Matrix:" << endl;
-    sparse.display();
-
+    printList(first);
+ 
     return 0;
 }
