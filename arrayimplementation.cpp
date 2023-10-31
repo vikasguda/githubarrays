@@ -1,78 +1,46 @@
 #include <iostream>
 using namespace std;
-
-class SparseMatrix {
-private:
-    int rows, cols;
-    int** matrix;
-
-public:
-    SparseMatrix(int m, int n) {
-        rows = m;
-        cols = n;
-        matrix = new int*[m];
-        for (int i = 0; i < m; i++) {
-            matrix[i] = new int[n];
-            for (int j = 0; j < n; j++) {
-                matrix[i][j] = 0;
-            }
-        }
+ 
+int main()
+{
+    // Assume 4x5 sparse matrix
+    int sparseMatrix[4][5] =
+    {
+        {0 , 0 , 3 , 0 , 4 },
+        {0 , 0 , 5 , 7 , 0 },
+        {0 , 0 , 0 , 0 , 0 },
+        {0 , 2 , 6 , 0 , 0 }
+    };
+ 
+    int size = 0;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 5; j++)
+            if (sparseMatrix[i][j] != 0)
+                size++;
+ 
+    // number of columns in compactMatrix (size) must be
+    // equal to number of non - zero elements in
+    // sparseMatrix
+    int compactMatrix[3][size];
+ 
+    // Making of new matrix
+    int k = 0;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 5; j++)
+            if (sparseMatrix[i][j] != 0)
+            {
+                compactMatrix[0][k] = i;
+                compactMatrix[1][k] = j;
+                compactMatrix[2][k] = sparseMatrix[i][j];
+                k++;
+            } 
+ 
+    for (int i=0; i<3; i++)
+    {
+        for (int j=0; j<size; j++)
+            cout <<" "<< compactMatrix[i][j];
+ 
+        cout <<"\n";
     }
-
-    // Set a non-zero value at a specific position
-    void setValue(int row, int col, int value) {
-        if (row < 0 || row >= rows || col < 0 || col >= cols) {
-            cout << "Invalid row or column index" << endl;
-            return;
-        }
-        matrix[row][col] = value;
-    }
-
-    // Get the value at a specific position
-    int getValue(int row, int col) {
-        if (row < 0 || row >= rows || col < 0 || col >= cols) {
-            cout << "Invalid row or column index" << endl;
-            return 0;
-        }
-        return matrix[row][col];
-    }
-
-    // Display the sparse matrix
-    void display() {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                cout << matrix[i][j] << " ";
-            }
-            cout << endl;
-        }
-    }
-
-    ~SparseMatrix() {
-        for (int i = 0; i < rows; i++) {
-            delete[] matrix[i];
-        }
-        delete[] matrix;
-    }
-};
-
-int main() {
-    int m, n;
-    cout << "Enter the number of rows: ";
-    cin >> m;
-    cout << "Enter the number of columns: ";
-    cin >> n;
-
-    SparseMatrix sparse(m, n);
-
-    cout << "Enter non-zero values (row, column, value):" << endl;
-    int row, col, value;
-    for (int i = 0; i < m; i++) {
-        cin >> row >> col >> value;
-        sparse.setValue(row, col, value);
-    }
-
-    cout << "Sparse Matrix:" << endl;
-    sparse.display();
-
     return 0;
 }
